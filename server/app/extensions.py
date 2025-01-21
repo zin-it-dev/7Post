@@ -1,4 +1,5 @@
 from flask_restx import Api
+from flask_cors import CORS
 
 authorizations = {
     "jwt": {
@@ -25,3 +26,5 @@ api = Api(
     validate=True,
     ordered=True,
 )
+
+cors = CORS(resources={r"/*": {"origins": "*"}})

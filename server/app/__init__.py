@@ -4,7 +4,7 @@ from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 
-from .extensions import api
+from .extensions import api, cors
 from .config import configs
 from .dao import get_users, get_callback_users
 from .admin import admin_manager
@@ -24,6 +24,7 @@ def create_app(config_name="development"):
     from .models import db
 
     db.init_app(app)
+    cors.init_app(app)
 
     migrate = Migrate(app, db)
     login_manager = LoginManager(app)

@@ -63,14 +63,25 @@ class Tag(Base):
         return self.label
 
 
+class Category(Base):
+    label = Column(String(80), unique=True)
+
+    posts = relationship("Post", backref="category", lazy=True)
+
+    def __str__(self):
+        return self.label
+
+
 class Post(Base):
     title = Column(String(80), unique=True)
+    subject = Column(String(125))
     content = Column(Text)
 
+    category_id = Column(Integer, ForeignKey(Category.id))
     user_id = Column(Integer, ForeignKey(User.id))
 
     comments = relationship("Comment", backref="post", lazy=True)
-    tags = relationship("Tag", secondary=post_tag, backref="posts", lazy=True)
+    tags = relationship("Tag", secondary=post_tag, backref="post", lazy=True)
 
     def __str__(self):
         return self.title

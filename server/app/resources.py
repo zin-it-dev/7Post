@@ -3,7 +3,7 @@ from flask import jsonify
 from flask_jwt_extended import jwt_required, current_user, create_access_token, create_refresh_token
 from flask_bcrypt import check_password_hash, generate_password_hash
 
-from .api_models import post, user, login, new_user, profile
+from .api_models import post, user, login, new_user, profile, comment
 from .dao import (
     get_posts,
     get_post,
@@ -12,6 +12,7 @@ from .dao import (
     auth_user,
     get_users,
     update_user,
+    get_comments,
 )
 from .parsers import post_parser, user_parser, profile_parser, password_parser, update_parser
 from .utils import upload_image
@@ -182,3 +183,17 @@ class Avatar(Resource):
         current_user.avatar = avatar_url
 
         return current_user, 200
+
+
+@post_ns.route("/<int:id>/comments")
+@post_ns.param("id", "The post identifier")
+@post_ns.response(404, "Post not found")
+class CommentList(Resource):
+    @post_ns.doc("list_comments")
+    @post_ns.marshal_list_with(comment, envelope="results")
+    def get(self, id):
+        """
+        List all comments
+        This endpoint get all comment of a post on the server.
+        """
+        return get_comments(id=id) or abort(404, message="Post not found")

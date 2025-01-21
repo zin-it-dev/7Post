@@ -3,6 +3,7 @@ from werkzeug.datastructures import FileStorage
 
 post_parser = reqparse.RequestParser()
 post_parser.add_argument("keyword", type=str, required=False, help="Title of the post")
+post_parser.add_argument("category", type=int, required=False, help="Category of the post")
 
 user_parser = reqparse.RequestParser()
 user_parser.add_argument("username", type=str, required=True, location="form")

@@ -1,15 +1,18 @@
-from .models import User, Post
+from .models import User, Post, Comment, db
 
 
 def get_users(id):
     return User.query.get(id)
 
 
-def get_posts(keyword):
+def get_posts(keyword, category):
     queries = Post.query.filter(Post.active.__eq__(True))
 
     if keyword:
         queries = queries.filter(Post.title.contains(keyword))
+
+    if category:
+        queries = queries.filter(Post.category_id.__eq__(category))
 
     return queries.order_by(Post.title).all()
 
@@ -55,3 +58,13 @@ def update_user(user_id, **kwargs):
         setattr(user, key, value)
     user.save()
     return user
+
+
+def get_comments(id):
+    return (
+        db.session.query(Comment)
+        .join(Post, Post.id.__eq__(Comment.post_id))
+        .filter(Post.active.is_(True), Post.id.__eq__(id))
+        .order_by(Comment.date_created.desc())
+        .all()
+    )
