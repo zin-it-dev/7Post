@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String, Boolean, Text, DateTime, ForeignKey
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
-from flask_bcrypt import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
 from .utils import hash_avatar_url
@@ -31,19 +31,20 @@ class User(Base, UserMixin):
     last_name = Column(String(80), nullable=True)
     bio = Column(String(255), nullable=True)
     avatar = Column(String(255), default=None)
+    is_admin = Column(Boolean, default=False)
 
     posts = relationship("Post", backref="user", lazy=True)
     comments = relationship("Comment", backref="user", lazy=True)
 
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
-        self.password = generate_password_hash(kwargs.get("password"), 10)
+        self.password = generate_password_hash(kwargs.get("password"))
 
         if not self.avatar:
             self.avatar = hash_avatar_url(email=self.email)
 
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
+    def verify_password(self, pwd):
+        return check_password_hash(self.password, pwd)
 
     def __str__(self):
         return self.username

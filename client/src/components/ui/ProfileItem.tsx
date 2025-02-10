@@ -6,8 +6,7 @@ const ProfileItem = (props: UserInfo) => {
 	return (
 		<div className='text-center'>
 			<Avatar
-				width={30}
-				heigth={30}
+				size={30}
 				{...props}
 			/>
 			<span className='ms-2 fs-6 text-light'>

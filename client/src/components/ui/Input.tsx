@@ -1,23 +1,29 @@
+import { useController, UseControllerProps } from 'react-hook-form';
 import { Form } from 'react-bootstrap';
 
-type InputType = {
-	name: string;
-	type: string;
-	id?: string;
-	value?: string;
-	placeholder: string;
-};
+import { FormValues, IFormInput } from '@/types/form.type';
 
-const Input = ({ name, type, id, value, placeholder }: InputType) => {
+const Input = (props: UseControllerProps<IFormInput> & FormValues) => {
+	const { field, fieldState } = useController(props);
+
 	return (
-		<Form.Group className='mb-3'>
+		<Form.Group
+			className='mb-3 fs-6'
+			controlId={`form-group-${props.name}`}>
+			<Form.Label className='fw-bold'>{props.label}</Form.Label>
 			<Form.Control
-				type={type}
-				name={name}
-				defaultValue={value}
-				placeholder={placeholder}
-				id={id}
+				{...field}
+				size={props.size}
+				className='fs-6'
+				type={props.type}
+				placeholder={props.placeholder}
+				isInvalid={!!fieldState.error}
 			/>
+			<Form.Control.Feedback
+				type='invalid'
+				className='fs-6'>
+				{fieldState.error?.message}
+			</Form.Control.Feedback>
 		</Form.Group>
 	);
 };

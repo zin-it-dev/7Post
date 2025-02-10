@@ -1,5 +1,6 @@
 from flask_restx import Api
 from flask_cors import CORS
+from flask_debugtoolbar import DebugToolbarExtension
 
 authorizations = {
     "jwt": {
@@ -27,4 +28,5 @@ api = Api(
     ordered=True,
 )
 
-cors = CORS(resources={r"/*": {"origins": "*"}})
+cors = CORS(resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+debug_toolbar = DebugToolbarExtension()

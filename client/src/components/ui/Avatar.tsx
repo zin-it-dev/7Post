@@ -5,8 +5,7 @@ import { formatFullName } from '@/utils/formats';
 
 type AvatarProps = FullName & {
 	avatar: string;
-	width: number;
-	heigth: number;
+	size: number;
 };
 
 const Avatar = (props: AvatarProps) => {
@@ -14,8 +13,8 @@ const Avatar = (props: AvatarProps) => {
 		<Image
 			alt={formatFullName(props.first_name, props.last_name)}
 			src={props.avatar}
-			width={props.width}
-			height={props.heigth}
+			width={props.size}
+			height={props.size}
 			roundedCircle
 		/>
 	);

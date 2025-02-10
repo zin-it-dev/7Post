@@ -1,70 +1,88 @@
 from .models import User, Post, Comment, db
 
 
-def get_users(id):
-    return User.query.get(id)
+class BaseRepository:
+    def __init__(self, model):
+        self.model = model
+
+    def get_all(self):
+        return self.model.query.filter(self.model.active.__eq__(True)).all()
+
+    def get_by_id(self, id):
+        try:
+            return self.model.query.get(int(id))
+        except ValueError:
+            return None
+
+    def create(self, **kwargs):
+        instance = self.model(**kwargs)
+        instance.save()
+        return instance
+
+    def update(self, id, **kwargs):
+        instance = self.model.query.get(int(id))
+
+        if not instance:
+            return None
+
+        for key, value in kwargs.items():
+            setattr(instance, key, value)
+
+        instance.save()
+        return user
 
 
-def get_posts(keyword, category):
-    queries = Post.query.filter(Post.active.__eq__(True))
+class PostRepository(BaseRepository):
+    def __init__(self):
+        super().__init__(Post)
 
-    if keyword:
-        queries = queries.filter(Post.title.contains(keyword))
+    def get_all(self, keyword=None, category=None):
+        query = self.model.query.filter(self.model.active.__eq__(True))
 
-    if category:
-        queries = queries.filter(Post.category_id.__eq__(category))
+        if keyword:
+            query = query.filter(self.model.title.contains(keyword))
 
-    return queries.order_by(Post.title).all()
+        if category:
+            query = query.filter(self.model.category_id.__eq__(category))
 
+        return query.order_by(self.model.title).all()
 
-def get_post(id):
-    return Post.query.get(int(id))
-
-
-def get_callback_users(identity):
-    return User.query.filter_by(id=identity).one_or_none()
-
-
-def create_user(username, email, password, **kwargs):
-    user = User(username=username, email=email, password=password, **kwargs)
-    user.save()
-    return user
-
-
-def check_user_duplicates(username, email):
-    errors = {}
-
-    if User.query.filter(User.username.__eq__(username)).first():
-        errors["username"] = "Username is already taken"
-
-    if User.query.filter(User.email.__eq__(email)).first():
-        errors["email"] = "Email is already registered"
-
-    return errors
+    def filter_comments(self, id):
+        return (
+            db.session.query(Comment)
+            .join(self.model, self.model.id.__eq__(Comment.post_id))
+            .filter(self.model.active.is_(True), self.model.id.__eq__(id))
+            .order_by(Comment.date_created.desc())
+            .all()
+        )
 
 
-def auth_user(email, password):
-    user = User.query.filter(User.email.__eq__(email)).first()
-    return user if user and user.check_password(password=password) else None
+class UserRepository(BaseRepository):
+    def __init__(self):
+        super().__init__(User)
+
+    def get_callback_users(self, identity):
+        return self.model.query.filter_by(id=identity).one_or_none()
+
+    def is_exists(self, email, username):
+        return (
+            self.model.query.filter(
+                (self.model.email.__eq__(email)) | (self.model.username.__eq__(username))
+            ).first()
+            is not None
+        )
+
+    def auth_user(self, email, password):
+        user = self.model.query.filter(self.model.email.__eq__(email)).first()
+        return user if user and user.verify_password(password) else None
 
 
-def update_user(user_id, **kwargs):
-    user = User.query.get(user_id)
+class AnalyticsRepository:
+    def stats_posts_by_category():
+        return db.session.query(Category.id, Category.label, func.count(Post.id)).join(Post, Post.category_id.__eq__(Category.id), isouter=True).group_by(Category.id).all()
 
-    if not user:
-        return None
-
-    for key, value in kwargs.items():
-        setattr(user, key, value)
-    user.save()
-    return user
-
-
-def get_comments(id):
-    return (
-        db.session.query(Comment)
-        .join(Post, Post.id.__eq__(Comment.post_id))
-        .filter(Post.active.is_(True), Post.id.__eq__(id))
-        .order_by(Comment.date_created.desc())
-        .all()
-    )
+    def stats_total_users():
+        return User.query.count()
+    
+    def stats_active_users():
+        return User.query.filter(User.active.__eq__(True)).count()

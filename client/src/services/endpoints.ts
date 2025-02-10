@@ -1,4 +1,6 @@
 export const ENDPOINTS = {
+	token: import.meta.env.VITE_API_TOKEN_URL,
+	me: import.meta.env.VITE_API_USERS_URL,
 	posts: (keyword?: string, category?: string) => {
 		let url = `${import.meta.env.VITE_API_POSTS_URL}?`;
 

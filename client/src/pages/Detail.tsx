@@ -47,10 +47,7 @@ const Detail = () => {
 											to={`/@${data.user.username}`}>
 											<Avatar
 												{...data.user}
-												width={
-													45
-												}
-												heigth={
+												size={
 													45
 												}
 											/>
@@ -151,7 +148,9 @@ const Detail = () => {
 					</Figure>
 
 					<div className='mt-4 border-bottom pb-5'>
-						<section className='mb-5'>{data.content}</section>
+						<section className='mb-5 text-justify'>
+							{data.content}
+						</section>
 
 						<Stack
 							direction='horizontal'

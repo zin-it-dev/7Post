@@ -1,26 +1,19 @@
 from flask_restx import Namespace, Resource, abort
 from flask import jsonify
 from flask_jwt_extended import jwt_required, current_user, create_access_token, create_refresh_token
-from flask_bcrypt import check_password_hash, generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from .api_models import post, user, login, new_user, profile, comment
-from .dao import (
-    get_posts,
-    get_post,
-    create_user,
-    check_user_duplicates,
-    auth_user,
-    get_users,
-    update_user,
-    get_comments,
-)
+from .dao import PostRepository, UserRepository
 from .parsers import post_parser, user_parser, profile_parser, password_parser, update_parser
 from .utils import upload_image
-
 
 post_ns = Namespace("posts", description="Posts operations")
 user_ns = Namespace("users", description="User operations")
 token_ns = Namespace("token", description="Token operations")
+
+post_repo = PostRepository()
+user_repo = UserRepository()
 
 
 @post_ns.route("/")
@@ -34,7 +27,7 @@ class PostList(Resource):
         This endpoint get all posts on the server.
         """
         args = post_parser.parse_args()
-        return get_posts(**args)
+        return post_repo.get_all(**args)
 
     def post(self):
         """
@@ -52,7 +45,7 @@ class Post(Resource):
     @post_ns.marshal_with(post)
     def get(self, id):
         """Fetch a post given its identifier"""
-        return get_post(id=id) or abort(404)
+        return post_repo.get_by_id(id) or abort(404)
 
     @post_ns.doc("update_post", security="jwt")
     @post_ns.marshal_with(post, code=200)
@@ -78,15 +71,15 @@ class User(Resource):
         args = user_parser.parse_args()
         avatar = args["avatar"]
 
-        errors = check_user_duplicates(args["username"], args["email"])
+        errors = user_repo.is_exists(args["email"], args["username"])
 
         if errors:
-            abort(400, message="Validation failed", errors=errors)
+            abort(400, message="User with this email or username already exists.", errors=errors)
 
         if avatar:
             avatar_url = upload_image(file_data=avatar)
 
-        new_user = create_user(
+        new_user = user_repo.create(
             username=args["username"],
             email=args["email"],
             password=args["password"],
@@ -104,7 +97,9 @@ class Token(Resource):
     @token_ns.expect(login)
     def post(self):
         """Get access token"""
-        user = auth_user(email=token_ns.payload["email"], password=token_ns.payload["password"])
+        user = user_repo.auth_user(
+            email=token_ns.payload["email"], password=token_ns.payload["password"]
+        )
 
         if not user:
             return jsonify(message="Invalid email or password"), 401
@@ -129,7 +124,7 @@ class CurrentUser(Resource):
     @user_ns.marshal_with(profile, code=200)
     def get(self):
         """Get current user"""
-        return get_users(id=current_user.id) or abort(401)
+        return user_repo.get_by_id(id=current_user.id) or abort(401)
 
     @user_ns.doc("update_profile", security="jwt")
     @user_ns.expect(profile_parser)
@@ -196,4 +191,4 @@ class CommentList(Resource):
         List all comments
         This endpoint get all comment of a post on the server.
         """
-        return get_comments(id=id) or abort(404, message="Post not found")
+        return post_repo.filter_comments(id=id) or abort(404, message="Post not found")

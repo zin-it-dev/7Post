@@ -1,7 +1,7 @@
-import { Post, Posts } from '@/types/post.type';
 import { clientHttp } from './axios';
 import { ENDPOINTS } from './endpoints';
 import { Comments } from '@/types/comment.type';
+import { Post, Posts } from '@/types/post.type';
 
 export const fetchPosts = async (
 	keyword?: string,

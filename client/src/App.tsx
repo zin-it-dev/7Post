@@ -16,7 +16,7 @@ const App = () => {
 						element={<route.component />}
 					/>
 				))}
-				<Route element={<AuthLayout />}>
+				<Route element={<AuthLayout title='Sign In' />}>
 					<Route
 						path='/sign-in'
 						element={<LogIn />}

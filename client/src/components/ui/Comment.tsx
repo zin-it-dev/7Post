@@ -11,8 +11,7 @@ const Comment = (props: CommentType) => {
 			<Card.Body>
 				<Card.Title>
 					<Avatar
-						width={30}
-						heigth={30}
+						size={30}
 						{...props.user}
 					/>
 					<Link
