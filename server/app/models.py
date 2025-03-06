@@ -1,5 +1,6 @@
+import enum
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String, Boolean, Text, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, Text, DateTime, ForeignKey, Enum
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -27,8 +28,6 @@ class User(Base, UserMixin):
     username = Column(String(80), unique=True)
     email = Column(String(100), unique=True)
     password = Column(String(255))
-    first_name = Column(String(80), nullable=True)
-    last_name = Column(String(80), nullable=True)
     bio = Column(String(255), nullable=True)
     avatar = Column(String(255), default=None)
     is_admin = Column(Boolean, default=False)
@@ -75,7 +74,11 @@ class Category(Base):
 
 class Post(Base):
     title = Column(String(80), unique=True)
-    subject = Column(String(125))
+    subject = Column(String(200))
+    image = Column(
+        String(225),
+        default="https://img.freepik.com/premium-vector/laptop-website-video-book-with-graduation-cap_24640-34499.jpg?w=1380",
+    )
     content = Column(Text)
 
     category_id = Column(Integer, ForeignKey(Category.id))
@@ -88,11 +91,27 @@ class Post(Base):
         return self.title
 
 
-class Comment(Base):
-    content = Column(Text)
+class Common(Base):
+    __abstract__ = True
 
     post_id = Column(Integer, ForeignKey(Post.id))
     user_id = Column(Integer, ForeignKey(User.id))
 
+
+class Comment(Common):
+    content = Column(Text)
+
     def __str__(self):
         return f"Comment: {self.content[:20]}..."
+
+
+class InteractionType(enum.Enum):
+    LIKE = 1
+    SHARE = 2
+
+
+class Interaction(Common):
+    type = Column(Enum(InteractionType))
+
+    def __str__(self):
+        return f"Interaction: {self.type}..."

@@ -7,7 +7,7 @@ import { IFormInput } from '@/types/form.type';
 import { loginSchema } from '@/types/loginSchema';
 import Input from '@/components/ui/Input';
 import useLogIn from '@/hooks/useLogIn';
-import ActivityIndicator from '@/components/ui/ActivityIndicator';
+import Loading from '@/components/ui/Loading';
 
 const LogIn = () => {
 	const { login, isPending, error } = useLogIn();
@@ -55,15 +55,15 @@ const LogIn = () => {
 				/>
 
 				<Button
-					className='my-4 d-block mx-auto w-50'
+					className='my-4 d-block mx-auto w-50 fs-6'
 					size='sm'
 					type='submit'
 					variant='outline-primary'
 					disabled={isPending}>
-					{isPending ? <ActivityIndicator /> : 'Sign In'}
+					{isPending ? <Loading /> : 'Sign In'}
 				</Button>
 
-				<p className='text-center fs-6'>
+				<p className='text-center'>
 					Don't have an account yet?{' '}
 					<Link
 						to={'/sign-up'}
@@ -72,8 +72,14 @@ const LogIn = () => {
 					</Link>
 				</p>
 
-				<p className='fs-7 mt-5 mb-3 text-body-secondary'>
-					&copy; 2017 - {new Date().getFullYear()}
+				<p className='mt-5 mb-3 text-body-secondary'>
+					&copy; 2022 - {new Date().getFullYear()} | Made by{' '}
+					<Link
+						className='fw-bold text-decoration-none'
+						to={'github.com/zin-it-dev'}
+						target='_blank'>
+						ZIN
+					</Link>
 				</p>
 			</Form>
 		</>

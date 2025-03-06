@@ -1,9 +1,8 @@
 import { Route, Routes } from 'react-router';
-import LogIn from './pages/LogIn';
-import Register from './pages/Register';
+
 import RootLayout from '@/components/layouts/RootLayout';
 import AuthLayout from '@/components/layouts/AuthLayout';
-import { publicRoutes } from '@/routes/routes';
+import { authRoutes, publicRoutes } from '@/routes/routes';
 
 const App = () => {
 	return (
@@ -16,16 +15,16 @@ const App = () => {
 						element={<route.component />}
 					/>
 				))}
-				<Route element={<AuthLayout title='Sign In' />}>
+				{authRoutes.map((route, idx) => (
 					<Route
-						path='/sign-in'
-						element={<LogIn />}
-					/>
-					<Route
-						path='/sign-up'
-						element={<Register />}
-					/>
-				</Route>
+						key={idx}
+						element={<AuthLayout title={route.title} />}>
+						<Route
+							path={route.path}
+							element={<route.component />}
+						/>
+					</Route>
+				))}
 			</Route>
 		</Routes>
 	);

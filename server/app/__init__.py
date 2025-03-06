@@ -8,7 +8,7 @@ from .extensions import api, cors, debug_toolbar
 from .config import configs
 from .dao import UserRepository
 from .admin import admin_manager, babel
-from .resources import post_ns, user_ns, token_ns
+from .resources import post_ns, user_ns, token_ns, category_ns
 from .controllers import auth_admin
 from .models import db
 
@@ -28,6 +28,7 @@ def create_app(config_name="development"):
     api.add_namespace(post_ns)
     api.add_namespace(user_ns)
     api.add_namespace(token_ns)
+    api.add_namespace(category_ns)
 
     db.init_app(app)
     cors.init_app(app)

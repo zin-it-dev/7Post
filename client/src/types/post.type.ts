@@ -5,6 +5,7 @@ import { UserInfo } from './user.type';
 export type Post = Base & {
 	title: string;
 	subject: string;
+	image?: string;
 	content: string;
 	category: Category;
 	user: UserInfo;

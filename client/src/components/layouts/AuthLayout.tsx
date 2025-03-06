@@ -17,7 +17,7 @@ const AuthLayout = (props: Layout) => {
 				<div className='p-lg-2'>
 					<h3 className='text-center'>{props.title}</h3>
 					<p className='text-center fs-5 text-muted mb-3 text-uppercase fst-italic'>
-						Please sign in
+						Please {props.title}
 					</p>
 					<Outlet />
 				</div>

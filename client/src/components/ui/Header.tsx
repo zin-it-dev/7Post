@@ -20,12 +20,12 @@ const Header = () => {
 				<Link
 					className='navbar-brand logo fw-bolder'
 					to={'/'}>
-					7Post
+					Dev7
 				</Link>
 				<Navbar.Toggle aria-controls='responsive-navbar-nav' />
 				<Navbar.Collapse id='responsive-navbar-nav'>
 					<Search />
-					<Nav className='fs-6 text-capitalize align-items-lg-center'>
+					<Nav className='text-capitalize align-items-lg-center'>
 						{isAuthenticated ? (
 							<>
 								<NavLink
@@ -43,14 +43,12 @@ const Header = () => {
 									}
 									id='user-nav-dropdown'>
 									<NavDropdown.Item
-										className='fs-6'
 										as={Link}
 										to='/profile'>
 										Profile
 									</NavDropdown.Item>
 									<NavDropdown.Divider />
 									<NavDropdown.Item
-										className='fs-6'
 										onClick={logout}>
 										Logout
 									</NavDropdown.Item>

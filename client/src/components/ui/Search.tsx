@@ -21,7 +21,7 @@ const Search = () => {
 			onSubmit={handleSearch}>
 			<Form.Control
 				type='search'
-				className='rounded-5 fs-6'
+				className='rounded-5'
 				placeholder='Search'
 				name='keyword'
 				value={searchQuery}

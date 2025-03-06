@@ -1,4 +1,6 @@
-from .models import User, Post, Comment, db
+from sqlalchemy import func
+
+from .models import User, Post, Comment, Category, db
 
 
 class BaseRepository:
@@ -79,10 +81,12 @@ class UserRepository(BaseRepository):
 
 class AnalyticsRepository:
     def stats_posts_by_category():
-        return db.session.query(Category.id, Category.label, func.count(Post.id)).join(Post, Post.category_id.__eq__(Category.id), isouter=True).group_by(Category.id).all()
+        return (
+            db.session.query(Category.id, Category.label, func.count(Post.id))
+            .join(Post, Post.category_id.__eq__(Category.id), isouter=True)
+            .group_by(Category.id)
+            .all()
+        )
 
-    def stats_total_users():
-        return User.query.count()
-    
     def stats_active_users():
         return User.query.filter(User.active.__eq__(True)).count()

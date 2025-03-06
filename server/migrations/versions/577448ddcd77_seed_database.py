@@ -1,19 +1,18 @@
 """Seed database
 
-Revision ID: 5fc3ffd60cf9
-Revises: 414a86c1323f
-Create Date: 2025-02-10 20:12:40.560030
+Revision ID: 577448ddcd77
+Revises: ac9ce1a5d8d0
+Create Date: 2025-02-27 11:33:14.003628
 
 """
-
 from alembic import op
 from werkzeug.security import generate_password_hash
 
 from app.utils import hash_avatar_url
 
 # revision identifiers, used by Alembic.
-revision = "5fc3ffd60cf9"
-down_revision = "414a86c1323f"
+revision = '577448ddcd77'
+down_revision = 'ac9ce1a5d8d0'
 branch_labels = None
 depends_on = None
 

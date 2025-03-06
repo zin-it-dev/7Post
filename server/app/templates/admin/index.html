@@ -21,43 +21,14 @@ current_user.is_admin %}
 						<th scope="col">Amount</th>
 					</tr>
 				</thead>
-				<!-- <tbody>
-					{% for c in categories %}
-					<tr class="table-light">
-						<td>{{c[0] }}</td>
-						<td>{{c[1] }}</td>
-						<td>{{c[2] }}</td>
-					</tr>
-					{% endfor%}
-					<tr class="table-light">
-						<th colspan="2">Total</th>
-						<td>{{total_courses}}</td>
-					</tr>
-				</tbody> -->
-			</table>
-		</div>
-		<div class="col-6">
-			<table class="table table-hover table-bordered">
-				<caption></caption>
-				<thead class="bg-primary">
-					<tr>
-						<th scope="col">ID</th>
-						<th scope="col">Name</th>
-						<th scope="col">Amount</th>
-					</tr>
-				</thead>
 				<tbody>
-					<!-- {% for c in categories %}
+					{% for c in stats %}
 					<tr class="table-light">
 						<td>{{c[0] }}</td>
 						<td>{{c[1] }}</td>
 						<td>{{c[2] }}</td>
 					</tr>
 					{% endfor%}
-					<tr class="table-light">
-						<th colspan="2">Total</th>
-						<td>{{total_courses}}</td>
-					</tr> -->
 				</tbody>
 			</table>
 		</div>
